@@ -1,122 +1,103 @@
 # Forecasting FDI Equity Inflows into India using Machine Learning
 
-**Machine Learning Application Project | Project No. 72 | Problem No. 71**  
+**Project No.: 72 | Problem No.: 71**  
 **Student:** Naman Bansal | **University Roll No.:** 24020570065  
-**Domain:** Economy / Partnerships | **SDG 17: Partnerships for the Goals**  
-**Related SDG:** SDG 8 – Decent Work and Economic Growth
+**Domain:** Economy / Partnerships  
+**SDG 17:** Partnerships for the Goals  
+**Related SDG 8:** Decent Work and Economic Growth
 
-> **Status: ANNUAL-FREQUENCY PILOT — NOT THE FINAL QUARTERLY EXPERIMENT.**  
-> The assigned task requires quarterly FDI equity inflows and additional predictors such as exchange rates and policy indicators. The currently available data extract contains annual DPIIT equity-inflow observations. The supplied spreadsheet contains cumulative sector-wise totals, not quarterly observations. This repository labels the work accurately and does not manufacture quarterly values.
+> **Status: ANNUAL-FREQUENCY PILOT — NOT THE FINAL QUARTERLY EXPERIMENT.** The assigned problem requires quarterly FDI equity inflows and supporting predictors. This repository currently contains an annual-frequency pilot because quarterly observations and matching predictor series still need to be retrieved and validated. Do not describe these annual metrics as quarterly forecasting results.
 
-## 1. Project overview
+## Research objectives
+1. Describe the movement in India's FDI equity inflows.
+2. Compare syllabus-level regression models using lagged inflows.
+3. Evaluate predictions using RMSE, MAPE and R² with chronological train/test splitting.
+4. Extend the study to quarterly frequency after obtaining official quarterly/monthly target observations and matching RBI predictors.
 
-This project studies whether classical regression models can forecast India's FDI equity inflows. The pilot compares Linear Regression, Polynomial Regression (degree 2 with Ridge regularisation), Ridge Regression and Lasso Regression against a persistence baseline.
-
-The target is **FDI equity inflow in USD million**. The pilot uses the previous financial year's inflow (`lag1`) and a time index as predictors. A chronological split is used to avoid training on future observations.
-
-## 2. Repository structure
-
-```text
-FDI_Equity_Inflows_India_ML_Project/
+## Repository structure
+```
+ML-Project-/
 ├── data/
-│   ├── raw/
-│   │   └── user_supplied_sector_cumulative_fdi.xls
-│   └── processed/
-│       └── fdi_annual_dataset.csv
+│   ├── fdi_annual_dataset.csv
+│   └── user_supplied_sector_cumulative_fdi.xls  # upload this binary source workbook
 ├── docs/
 │   └── DATA_SOURCES_AND_LIMITATIONS.md
 ├── notebooks/
 │   └── 01_annual_pilot_overview.ipynb
-├── reports/
-│   ├── FDI_Project_71_Journal_Format_DRAFT.pdf
+├── report/
+│   ├── FDI_Project_71_Journal_Format_DRAFT.pdf   # upload from ZIP
 │   └── figures/
 │       ├── fdi_annual_trend.png
 │       └── fdi_model_comparison.png
 ├── results/
 │   └── annual_pilot_model_metrics.csv
-├── scripts/
-│   └── reproduce_analysis.py
 ├── src/
-│   └── __init__.py
+│   └── run_analysis.py
 ├── .gitignore
 ├── PROBLEM.md
+├── STATUS.md
 ├── requirements.txt
 └── README.md
 ```
 
-## 3. Data sources
+## Data
+- `data/fdi_annual_dataset.csv`: DPIIT annual FDI equity inflow observations for FY 2000–01 to FY 2024–25, in USD million.
+- `data/user_supplied_sector_cumulative_fdi.xls`: original supplied workbook of cumulative sector-wise FDI totals. This is supplementary context, not a quarterly time series.
 
-1. **DPIIT, Ministry of Commerce and Industry, Government of India** – Quarterly Fact Sheet on FDI Inflow, including financial-year-wise FDI equity inflow. The annual pilot series is transcribed from the fact sheet.
-2. **Open Government Data Platform India** – FDI Equity Inflows catalogue: https://www.data.gov.in/catalog/foreign-direct-investment-fdi-equity-inflows
-3. **RBI Database on Indian Economy** – source portal for exchange-rate and external-sector series: https://data.rbi.org.in/
-4. **User-supplied sector spreadsheet** – cumulative sector-wise FDI equity totals from April 2000 to June 2023. It is supplementary only and is not a quarterly time series.
+Official source portals:
+- DPIIT, Ministry of Commerce and Industry: https://www.dpiit.gov.in/
+- Open Government Data FDI equity inflow catalogue: https://www.data.gov.in/catalog/foreign-direct-investment-fdi-equity-inflows
+- RBI Database on Indian Economy: https://data.rbi.org.in/
 
-See [`docs/DATA_SOURCES_AND_LIMITATIONS.md`](docs/DATA_SOURCES_AND_LIMITATIONS.md).
+See [data source and limitation notes](docs/DATA_SOURCES_AND_LIMITATIONS.md).
 
-## 4. Models and evaluation
-
+## Models
 - Linear Regression
-- Polynomial Regression (degree 2) + Ridge regularisation
+- Polynomial Regression (degree 2) with Ridge regularisation
 - Ridge Regression
 - Lasso Regression
-- Persistence baseline (predict next year as the previous year's value)
+- Persistence baseline (next annual value equals the previous year's value)
 
-Metrics:
-- RMSE (USD million)
-- MAPE (%)
-- R²
+Metrics: RMSE (USD million), MAPE (%) and R². The annual series contains 25 full financial-year observations; after constructing a one-year lag, the first 18 usable observations form the training set and the final 6 form the hold-out test set.
 
-The annual dataset contains 25 full financial-year observations (FY 2000–01 to FY 2024–25). After creating the one-year lag, 24 samples remain. The first 18 are used for training and the final 6 for testing.
+## Current annual-pilot result
+The checked-in metrics show the persistence baseline outperforms the four regression models in this small six-observation hold-out window. This is reported transparently. The test window is too small for strong claims about generalisation.
 
-## 5. Current pilot results
+**These values are not quarterly forecast metrics.** No quarterly target, RBI exchange-rate predictor or policy-event feature has yet been incorporated.
 
-The checked-in `results/annual_pilot_model_metrics.csv` contains the current run's metrics. In this six-observation test window, the persistence baseline performs better than the four regression models. This is reported transparently rather than selecting a worse model to make the results appear stronger.
-
-**Do not interpret these numbers as quarterly forecast performance.** The quarterly target, RBI exchange-rate feature and dated policy indicators have not yet been incorporated.
-
-## 6. How to reproduce
-
-Python 3.10 or later is recommended.
+## Reproduce the annual pilot
+Python 3.10+ recommended.
 
 ### Windows (PowerShell)
-
 ```powershell
-git clone https://github.com/YOUR-USERNAME/FDI-Equity-Inflows-India-ML-Project.git
-cd FDI-Equity-Inflows-India-ML-Project
-py -m venv .venv
-.venv\Scripts\Activate.ps1
+python -m venv .venv
+.venv\\Scripts\\Activate.ps1
 pip install -r requirements.txt
-python scripts/reproduce_analysis.py
+python src/run_analysis.py
 ```
 
 ### macOS / Linux
-
 ```bash
-git clone https://github.com/YOUR-USERNAME/FDI-Equity-Inflows-India-ML-Project.git
-cd FDI-Equity-Inflows-India-ML-Project
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-python scripts/reproduce_analysis.py
+python src/run_analysis.py
 ```
 
-The script reads the included annual CSV and regenerates the metrics and figures.
+The script regenerates the model metrics and figures in `results/` and `report/figures/`.
 
-## 7. Next steps to complete Problem 71
+## Remaining work for Problem 71
+1. Retrieve official quarterly FDI equity observations, or monthly observations that can be consistently aggregated into quarters.
+2. Retrieve matching RBI USD/INR exchange-rate observations.
+3. Encode dated and sourced policy-event indicators.
+4. Align all variables by quarter and build chronological train/validation/test splits.
+5. Re-run the model comparison and replace the annual pilot PDF, graphs and metrics with genuine quarterly results.
 
-1. Retrieve the official quarterly DPIIT/OGD FDI equity-inflow observations, or monthly equity inflows that can be aggregated into quarters.
-2. Retrieve a matching RBI USD/INR exchange-rate series.
-3. Create dated policy-event indicators from documented official announcements.
-4. Align all variables to the same quarter and document missing-value treatment.
-5. Re-run chronological train/validation/test experiments using the assigned quarterly frequency.
-6. Replace the annual-pilot tables and figures in the report with quarterly results.
+No annual inflow total has been divided into artificial quarters. No exchange-rate or policy-event values have been fabricated.
 
-## 8. Academic integrity and limitations
+## Academic integrity
+The PDF in `report/` is an annual-pilot draft, not the final quarterly report. Verify all source figures and follow the course's AI-use disclosure policy before submission.
 
-The repository intentionally distinguishes observed annual data from the required quarterly dataset. No annual total has been divided into four artificial quarters. No exchange rates or policy indicators have been fabricated. The attached PDF is a **draft pilot report**, not a final submission-ready quarterly paper.
-
-## 9. Author
-
+## Author
 **Naman Bansal**  
-B.Sc. (Hons.) Computer Science  
-University of Delhi
+B.Sc. (Hons.) Computer Science, University of Delhi
